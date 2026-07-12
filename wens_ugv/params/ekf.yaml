@@ -1,0 +1,78 @@
+ekf_filter_node:
+  ros__parameters:
+    use_sim_time: true            # Gazebo 시뮬 시간 동기화
+    frequency: 50.0               # 필터 주기 (Hz)
+    sensor_timeout: 0.1           # 센서 데이터 수신 타임아웃
+    two_d_mode: true              # 2D 이동 로봇이므로 roll/pitch 무시
+
+    # -----------------------------
+    # 프레임 설정
+    # -----------------------------
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_link
+    world_frame: map
+
+    # -----------------------------
+    # IMU 설정
+    # -----------------------------
+    imu0: /imu/data
+    imu0_config: [false, false, false,   # 위치 (x,y,z) 불필요
+                  false, false, true,    # orientation: yaw만 사용
+                  false, false, false,   # 선속도 불필요
+                  false, false, true,    # yaw rate만 사용
+                  false, false, false,   # 가속도 불필요
+                  false, false, false]   # 기타 불필요
+    imu0_differential: false
+    imu0_relative: false
+    imu0_queue_size: 10
+    imu0_remove_gravitational_acceleration: true
+
+    # -----------------------------
+    # Odometry 설정
+    # -----------------------------
+    odom0: /odom
+    odom0_config: [true, true, false,    # x, y 위치 사용
+                   false, false, true,   # yaw 사용
+                   true, true, false,    # x, y 속도 사용
+                   false, false, false,  # yaw rate 사용하지 않음
+                   false, false, false,  # 가속도 불필요
+                   false, false, false]  # 기타 불필요
+    odom0_queue_size: 10
+    odom0_differential: false
+    odom0_relative: false
+
+    # -----------------------------
+    # 초기 공분산 (초기 상태 불확실성)
+    # -----------------------------
+    initial_estimate_covariance: [
+      1e-3, 0.0,   0.0,   0.0,   0.0,   0.0,
+      0.0,   1e-3, 0.0,   0.0,   0.0,   0.0,
+      0.0,   0.0,   1e-1, 0.0,   0.0,   0.0,
+      0.0,   0.0,   0.0,   1e-2, 0.0,   0.0,
+      0.0,   0.0,   0.0,   0.0,   1e-2, 0.0,
+      0.0,   0.0,   0.0,   0.0,   0.0,   1e-3
+    ]
+
+    # -----------------------------
+    # 프로세스 잡음 공분산 (모델 불확실성)
+    # -----------------------------
+    process_noise_covariance: [
+      0.05, 0.0,   0.0,   0.0,   0.0,   0.0,
+      0.0,   0.05, 0.0,   0.0,   0.0,   0.0,
+      0.0,   0.0,   0.1,  0.0,   0.0,   0.0,
+      0.0,   0.0,   0.0,  0.02,  0.0,   0.0,
+      0.0,   0.0,   0.0,   0.0,  0.02,  0.0,
+      0.0,   0.0,   0.0,   0.0,   0.0,  0.02
+    ]
+
+    # -----------------------------
+    # 기타 옵션
+    # -----------------------------
+    use_control: false
+    publish_tf: true
+
+    # 디버깅 옵션
+    debug: true
+    debug_out_file: "/tmp/ekf_debug.txt"
+
